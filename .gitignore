@@ -1,0 +1,6 @@
+output*
+output/preprocessing*
+output/text*
+!output/.gitkeep
+!output/preprocessing/.gitkeep
+!output/text/.gitkeep
