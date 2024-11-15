@@ -4,5 +4,8 @@ output/text*
 !output/.gitkeep
 !output/preprocessing/.gitkeep
 !output/text/.gitkeep
-__pycache__/
+feature/__pycache__
+feature/sub_processs/__pycache__
+static/__pycache__
 *.pyc
+
