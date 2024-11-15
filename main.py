@@ -2,7 +2,7 @@ import pathlib
 import warnings
 
 #! for windows
-pathlib.PosixPath = pathlib.WindowsPath
+# pathlib.PosixPath = pathlib.WindowsPath
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
