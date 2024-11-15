@@ -3,15 +3,15 @@ from static.StaticConstant import StaticConstant
 
 class WebcamCapture:
     def __init__(self):
-        self.cap = cv2.VideoCapture(StaticConstant.CAMERA_ID)
+        self.cap = cv2.VideoCapture(StaticConstant.WEBCAM_ID)
         if not self.cap.isOpened():
-            print("Error: Could not open webcam.")
+            print(StaticConstant.FAILED_OPEN_WEBCAM)
             exit()
     
     def get_frame(self):
         ret, frame = self.cap.read()
         if not ret:
-            print("Failed to grab frame")
+            print(StaticConstant.FAILED_TAKE_FRAME)
             return None
         return frame
 

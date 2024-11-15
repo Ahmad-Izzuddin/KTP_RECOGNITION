@@ -33,6 +33,6 @@ class SubProcess_FrameProcessor:
                 print(StaticConstant.OUTPUT_IMAGE_FILE + preprocessed_filename)
                 print(StaticConstant.OUTPUT_TEXT_FILE + extracted_text_filename)
 
-                return True  # KTP detected and processed
+                return True
         print(StaticConstant.DETECT_RESULT_FALSE)
         return False
