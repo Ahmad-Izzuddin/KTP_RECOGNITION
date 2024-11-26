@@ -1,13 +1,17 @@
 import cv2
-
 from static.StaticConstant import StaticConstant
+from feature.ImageProcessor import ImageProcessor
 
 class SubProcess_DisplayHandler:
-    def __init__(self, window_name=StaticConstant.WINDOW_WEBCAM_TITLE):
-        self.window_name = window_name
+    def __init__(self):
+        self.original_window_name = StaticConstant.WINDOW_ORIGINAL_FRAME_TITLE
+        self.preprocessed_window_name = StaticConstant.WINDOW_PREPROCESSED_FRAME_TITLE
+        self.image_processor = ImageProcessor()
 
     def show_frame(self, frame):
-        cv2.imshow(self.window_name, frame)
+        preprocessed_frame = self.image_processor.preprocess(frame)
+        cv2.imshow(self.original_window_name, frame)
+        cv2.imshow(self.preprocessed_window_name, preprocessed_frame)
 
     def is_exit_requested(self):
         return cv2.waitKey(1) & 0xFF == ord(StaticConstant.BUTTON_CLOSE_WEBCAM)

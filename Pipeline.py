@@ -12,7 +12,6 @@ from feature.Process import Process
 
 class Pipeline:
     def __init__(self):
-        # Platform-specific adjustments
         if platform.system() == StaticConstant.DEFAULT_PLATFORM:
             pathlib.PosixPath = pathlib.WindowsPath
         
@@ -26,7 +25,6 @@ class Pipeline:
         self.output_handler = OutputHandler()
 
     def run(self):
-        # Create and run the KTP detection process
         Process(
             self.webcam, 
             self.model, 
