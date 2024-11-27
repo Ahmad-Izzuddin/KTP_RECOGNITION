@@ -79,7 +79,7 @@ class SubProcess_FrameProcessor:
                 start_index = i
                 break
 
-        extracted_text = text[start_index]
+        extracted_text = text[start_index:start_index + 16]
         text = extracted_text
 
         # Membuat gambar kosong untuk menampilkan teks
