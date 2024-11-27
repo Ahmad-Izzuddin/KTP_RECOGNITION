@@ -38,10 +38,8 @@ class ImageProcessor:
         processed_image = np.array(contrasted_image)
 
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (dilation_kernel_size, dilation_kernel_size))
-        # dilated_image = cv2.dilate(processed_image, kernel, iterations=1)
         opened_image = cv2.morphologyEx(processed_image, cv2.MORPH_OPEN, kernel)
 
-        # scaled_image = cv2.convertScaleAbs(dilated_image, alpha=scale_alpha, beta=scale_beta)
         scaled_image = cv2.convertScaleAbs(opened_image, alpha=scale_alpha, beta=scale_beta)
 
         if gaussian_blur_kernel_size % 2 == 0:  # Ensure odd kernel size

@@ -1,5 +1,5 @@
 class StaticConstant:
-    WEBCAM_ID = 1
+    WEBCAM_ID = 0
     DELAY_OBJECT_DETECTION = 10
     PYTESSERACT_LANGUANGE = 'ocraext'
     OBJECT_CLASS_INDEX = 0

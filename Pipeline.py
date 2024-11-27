@@ -17,7 +17,6 @@ class Pipeline:
         
         warnings.simplefilter(action='ignore', category=FutureWarning)
 
-        # Initialize components
         self.webcam = WebcamCapture()
         self.model = YoloModel()
         self.image_processor = ImageProcessor()

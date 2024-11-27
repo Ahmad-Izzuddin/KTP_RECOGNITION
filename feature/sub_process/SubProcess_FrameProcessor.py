@@ -1,6 +1,8 @@
 import cv2
 import time
 import numpy as np
+import psutil
+import os
 from PIL import Image
 from datetime import datetime
 
@@ -14,10 +16,17 @@ class SubProcess_FrameProcessor:
         self.output_handler = output_handler
 
     def process_frame(self, frame):
+        process = psutil.Process(os.getpid())
+
         img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         start_detection_time = time.time()
+        memory_before = process.memory_info().rss / 1024
         detected_objects = self.model.detect(img)
+        memory_after = process.memory_info().rss / 1024
         detection_time = time.time() - start_detection_time
+
+        detection_memory = f"Detection Memory: {memory_after - memory_before:.2f} KB\n"
+
         detection_time = f"Detection time: {detection_time}s\n"
 
         for _, row in detected_objects.iterrows():
@@ -32,18 +41,22 @@ class SubProcess_FrameProcessor:
 
                 timestamp = datetime.now().strftime(StaticConstant.DATE_FORMAT)
                 preprocessed_filename = f"{self.output_handler.preprocessing_output}/" + StaticConstant.PREPROCESSED_IMG_TEMPLATE.format(timestamp)
-                extracted_text_filename = f"{self.output_handler.text_output}/" + StaticConstant.EXTRACTED_TEXT_TEMPLATE.format(timestamp)
+                text_filename = f"{self.output_handler.text_output}/" + StaticConstant.EXTRACTED_TEXT_TEMPLATE.format(timestamp)
 
                 self.output_handler.save_image(processed_img, preprocessed_filename)
                 start_extraction_time = time.time()
-                extracted_text = self.ocr_processor.extract_text(processed_img)
+                memory_before = process.memory_info().rss / 1024
+                output_text = self.ocr_processor.extract_text(processed_img)
+                memory_after = process.memory_info().rss / 1024
                 extraction_time = time.time() - start_extraction_time
-                extraction_time = f"Extraction time: {extraction_time}s\n\n"
-                extracted_text = confidence_text + detection_time + extraction_time + extracted_text
-                self.output_handler.save_text(extracted_text, extracted_text_filename)
+                
+                extraction_memory = f"Extraction Memory: {memory_after - memory_before:.2f} KB\n\n"
 
-                # Menampilkan baris ke-4
-                lines = extracted_text.splitlines()
+                extraction_time = f"Extraction time: {extraction_time}s\n"
+                output_text = confidence_text + detection_time + detection_memory + extraction_time + extraction_memory + output_text
+                self.output_handler.save_text(output_text, text_filename)
+
+                lines = output_text.splitlines()
                 if len(lines) >= 7:
                     line = lines[7]
 
@@ -53,7 +66,7 @@ class SubProcess_FrameProcessor:
                 self.show_text_window(line)
 
                 print(StaticConstant.OUTPUT_IMAGE_FILE + preprocessed_filename)
-                print(StaticConstant.OUTPUT_TEXT_FILE + extracted_text_filename)
+                print(StaticConstant.OUTPUT_TEXT_FILE + text_filename)
                 return True
         print(StaticConstant.DETECT_RESULT_FALSE)
         return False
