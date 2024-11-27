@@ -1,5 +1,6 @@
 import cv2
 import time
+import numpy as np
 from PIL import Image
 from datetime import datetime
 
@@ -41,8 +42,59 @@ class SubProcess_FrameProcessor:
                 extracted_text = confidence_text + detection_time + extraction_time + extracted_text
                 self.output_handler.save_text(extracted_text, extracted_text_filename)
 
+                # Menampilkan baris ke-4
+                lines = extracted_text.splitlines()
+                if len(lines) >= 7:
+                    line = lines[7]
+
+                else:
+                    line = "Baris NIK tidak tersedia."
+
+                self.show_text_window(line)
+
                 print(StaticConstant.OUTPUT_IMAGE_FILE + preprocessed_filename)
                 print(StaticConstant.OUTPUT_TEXT_FILE + extracted_text_filename)
                 return True
         print(StaticConstant.DETECT_RESULT_FALSE)
         return False
+
+    def show_text_window(self, text):
+        # Cari angka pertama dan ambil 16 karakter setelahnya
+        start_index = -1
+        for i, char in enumerate(text):
+            if char.isdigit():
+                start_index = i
+                break
+
+        if start_index != -1 and len(text) >= start_index + 16:
+            extracted_text = text[start_index:start_index + 16]  # Ambil 16 karakter setelah angka pertama
+
+            # Validasi apakah semua karakter adalah angka
+            if all(c.isdigit() for c in extracted_text):
+                text = extracted_text
+            else:
+                text = "Format tidak valid"
+        else:
+            text = "Format tidak valid"
+
+        # Membuat gambar kosong untuk menampilkan teks
+        window_width, window_height = 480, 320
+        blank_image = np.zeros((window_height, window_width, 3), np.uint8)
+        blank_image[:] = (255, 255, 255)  # Latar belakang putih
+
+        # Menggambar teks pada gambar
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.6
+        color = (0, 0, 0)  # Warna teks hitam
+        thickness = 1
+        text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
+        text_x = (window_width - text_size[0]) // 2
+        text_y = (window_height + text_size[1]) // 2
+
+        cv2.putText(blank_image, text, (text_x, text_y), font, font_scale, color, thickness)
+
+        # Menampilkan jendela
+        cv2.imshow("Extracted Text - Line 4", blank_image)
+        cv2.waitKey(3000)  # Tunggu selama 3 detik
+        cv2.destroyAllWindows()
+

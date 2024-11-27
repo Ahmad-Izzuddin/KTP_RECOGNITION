@@ -1,7 +1,7 @@
 class StaticConstant:
     WEBCAM_ID = 1
-    DELAY_OBJECT_DETECTION = 5
-    PYTESSERACT_LANGUANGE = 'ocraext+arial+ind'
+    DELAY_OBJECT_DETECTION = 10
+    PYTESSERACT_LANGUANGE = 'ocraext'
     OBJECT_CLASS_INDEX = 0
     DATE_FORMAT = "%d%m%Y%H%M%S"
     PREPROCESSED_IMG_TEMPLATE = "output_{}.jpg"

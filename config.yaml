@@ -1,18 +1,18 @@
 preprocessing:
   black_range:
     lower:
-    - 0
-    - 0
-    - 0
+      - 0
+      - 0
+      - 0
     upper:
-    - 143
-    - 255
-    - 71
-  brightness_factor: 0.6
-  contrast_factor: 2.4
+      - 255
+      - 255
+      - 255
+  brightness_factor: 0.4
+  contrast_factor: 0.7
   dilation_kernel_size: 1
   gaussian_blur:
     kernel_size: 1
     sigma_x: 0
   scale_alpha: 5.0
-  scale_beta: -9
+  scale_beta: -71
