@@ -57,8 +57,8 @@ class SubProcess_FrameProcessor:
                 self.output_handler.save_text(output_text, text_filename)
 
                 lines = output_text.splitlines()
-                if len(lines) >= 7:
-                    line = lines[7]
+                if len(lines) >= 9:
+                    line = lines[9]
 
                 else:
                     line = "Baris NIK tidak tersedia."
