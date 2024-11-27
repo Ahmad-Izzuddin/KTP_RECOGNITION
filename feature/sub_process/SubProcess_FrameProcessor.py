@@ -81,12 +81,7 @@ class SubProcess_FrameProcessor:
 
         if start_index != -1 and len(text) >= start_index + 16:
             extracted_text = text[start_index:start_index + 16]  # Ambil 16 karakter setelah angka pertama
-
-            # Validasi apakah semua karakter adalah angka
-            if all(c.isdigit() for c in extracted_text):
-                text = extracted_text
-            else:
-                text = "Format tidak valid"
+            text = extracted_text
         else:
             text = "Format tidak valid"
 
