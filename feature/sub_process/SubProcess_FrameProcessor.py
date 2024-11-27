@@ -56,10 +56,10 @@ class SubProcess_FrameProcessor:
                 output_text = confidence_text + detection_time + detection_memory + extraction_time + extraction_memory + output_text
                 self.output_handler.save_text(output_text, text_filename)
 
+                print(output_text)
                 lines = output_text.splitlines()
                 if len(lines) >= 9:
                     line = lines[9]
-
                 else:
                     line = "Baris NIK tidak tersedia."
 
@@ -79,11 +79,8 @@ class SubProcess_FrameProcessor:
                 start_index = i
                 break
 
-        if start_index != -1 and len(text) >= start_index + 16:
-            extracted_text = text[start_index:start_index + 16]  # Ambil 16 karakter setelah angka pertama
-            text = extracted_text
-        else:
-            text = "Format tidak valid"
+        extracted_text = text[start_index]
+        text = extracted_text
 
         # Membuat gambar kosong untuk menampilkan teks
         window_width, window_height = 480, 320
