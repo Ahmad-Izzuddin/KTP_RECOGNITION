@@ -19,7 +19,11 @@ class Process:
                 if self.timer.is_time_to_detect():
                     self.processor.process_frame(frame)
 
-                self.display.show_frame(frame)
+                # self.display.show_frame(frame)
+                # if self.display.is_exit_requested():
+                #     break
+
+                self.display.show_blackscreen()
                 if self.display.is_exit_requested():
                     break
 

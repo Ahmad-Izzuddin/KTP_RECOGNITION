@@ -3,6 +3,7 @@ import time
 import numpy as np
 import psutil
 import os
+import re
 from PIL import Image
 from datetime import datetime
 
@@ -56,14 +57,26 @@ class SubProcess_FrameProcessor:
                 output_text = confidence_text + detection_time + detection_memory + extraction_time + extraction_memory + output_text
                 self.output_handler.save_text(output_text, text_filename)
 
-                print(output_text)
-                lines = output_text.splitlines()
-                if len(lines) >= 9:
-                    line = lines[9]
-                else:
-                    line = "Baris NIK tidak tersedia."
+                lines = output_text
+                line_probability1 = lines[6] if len(lines) > 6 else ""
+                line_probability2 = lines[7] if len(lines) > 7 else ""
+                line_probability3 = lines[8] if len(lines) > 8 else ""
+                line_probability4 = lines[9] if len(lines) > 9 else ""
+                line_probability5 = lines[10] if len(lines) > 10 else ""
+                line_probability6 = lines[11] if len(lines) > 11 else ""
 
-                self.show_text_window(line)
+                combined_lines = "\n".join([
+                    line_probability1, line_probability2, line_probability3,
+                    line_probability4, line_probability5, line_probability6
+                ])
+                line_win_probability = self.find_nik(combined_lines)
+                start_index = -1
+                for i, char in enumerate(line_win_probability):
+                    if char.isdigit():
+                        start_index = i
+                        break
+                line_win_probability = line_win_probability[start_index:start_index + 16]
+                self.show_text_window(line_win_probability)
 
                 print(StaticConstant.OUTPUT_IMAGE_FILE + preprocessed_filename)
                 print(StaticConstant.OUTPUT_TEXT_FILE + text_filename)
@@ -71,35 +84,38 @@ class SubProcess_FrameProcessor:
         print(StaticConstant.DETECT_RESULT_FALSE)
         return False
 
+    def has_minimum_digits(self, line, min_digits=9):
+        digits = re.findall(r'\d', line)
+        return len(digits) >= min_digits
+
+    def find_nik(self, output_text):
+        lines = output_text.splitlines()
+        for line in lines:
+            if self.has_minimum_digits(line):
+                nik = "".join(filter(str.isdigit, line))
+                if len(nik) == 16:
+                    return nik
+        return ""
+
     def show_text_window(self, text):
-        # Cari angka pertama dan ambil 16 karakter setelahnya
-        start_index = -1
-        for i, char in enumerate(text):
-            if char.isdigit():
-                start_index = i
-                break
-
-        extracted_text = text[start_index:start_index + 16]
-        text = extracted_text
-
-        # Membuat gambar kosong untuk menampilkan teks
         window_width, window_height = 480, 320
         blank_image = np.zeros((window_height, window_width, 3), np.uint8)
         blank_image[:] = (255, 255, 255)  # Latar belakang putih
 
-        # Menggambar teks pada gambar
         font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 0.6
-        color = (0, 0, 0)  # Warna teks hitam
-        thickness = 1
+        font_scale = 1.3
+        color = (0, 0, 0)
+        thickness = 2
         text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
         text_x = (window_width - text_size[0]) // 2
         text_y = (window_height + text_size[1]) // 2
 
         cv2.putText(blank_image, text, (text_x, text_y), font, font_scale, color, thickness)
 
-        # Menampilkan jendela
-        cv2.imshow("Extracted Text - Line 4", blank_image)
-        cv2.waitKey(3000)  # Tunggu selama 3 detik
-        cv2.destroyAllWindows()
+        cv2.namedWindow("Extracted Text - NIK", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("Extracted Text - NIK", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+        cv2.imshow("Extracted Text - NIK", blank_image)
+        cv2.waitKey(3000)
+        cv2.destroyWindow("Extracted Text - NIK")
 

@@ -15,6 +15,12 @@ class SubProcess_DisplayHandler:
 
     def is_exit_requested(self):
         return cv2.waitKey(1) & 0xFF == ord(StaticConstant.BUTTON_CLOSE_WEBCAM)
+    
+    def show_blackscreen(self):
+        image = cv2.imread('background/background_1.jpg')
+        cv2.namedWindow("Black Screen", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("Black Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow("Black Screen", image)
 
     def close(self):
         cv2.destroyAllWindows()
